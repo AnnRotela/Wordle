@@ -9,23 +9,41 @@ let palabra = lista[indice] //"APPLE";
 const button = document.getElementById("guess-button");
 const GRID = document.getElementById("grid");
 
+let listado = []//historico de intentos
+let diccionario = {"clave":"valor"}
+console.log ("diccionario", diccionario);
+console.log ("diccionario2", diccionario ["clave"])
+
+fetch('https://random-word-api.herokuapp.com/word?lang=es&length=5')
+    .then(response => response.json())
+    .then(response => {
+        console.log('desde API', response)
+        palabra = response [0].toUpperCase()
+        console.log(palabra)
+    })
+    .catch(err => console.error(err));
+
 console.log(palabra);
 
 button.addEventListener("click", intentar);
 
 function intentar()
 {
-    console.log(typeof document.getElementById("guess-input").value)
-    if (document.getElementById("guess-input").value.length !=5) 
-    { alert ("Debe tener 5 letras")}
+    const INTENTO = leerIntento();
+    const GRID = document.createElement("grid")
+    const ROW = document.createElement("div")
+    ROW.className = "row";
+    Input.value ="";
 
-    
- const ROW = document.createElement('div')
- ROW.className = 'row'
- console.log(ROW)
-
- const INTENTO = leerIntento();
-
+    if(INTENTO.length!=5 || !isNaN(INTENTO))
+    {
+        error.style.display= "block";
+        error.innerHTML= "¡debe ser una palabra de 5 letras!";
+        error.style.display= "none";
+        return;
+    }
+    error.style.display= "none";
+   
     console.log(INTENTO);
     intentos = intentos -1;
 
@@ -66,9 +84,12 @@ function intentar()
             console.log(SPAN)
             } 
             ROW.appendChild(SPAN);
-        }  
+            
+        } 
+        
        GRID.appendChild(ROW)
     }
+    
     if (intentos==0)
     {
         terminar("<h1>YOU LOST!</h1>")
